@@ -1,0 +1,24 @@
+package br.com.fiap.porquinho.infrastructure;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+
+@Configuration
+public class OpenAPIConfig {
+    @Bean
+    public OpenAPI customOpenApi() {
+        return new OpenAPI().info(
+                new Info()
+                        .title("Porquinho API")
+                        .version("1.0.0")
+                        .description("""
+                                O Porquinho é um sistema de gestão financeira pessoal que ajuda os usuários
+                                a organizar carteiras, contas e transações em um só lugar.
+                                Ele oferece uma visão clara sobre gastos, receitas e saldo geral,
+                                com relatórios intuitivos e análises inteligentes.
+                                """));
+    }
+}
