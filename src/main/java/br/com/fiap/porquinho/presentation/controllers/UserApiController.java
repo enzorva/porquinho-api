@@ -75,10 +75,10 @@ public class UserApiController {
     @Operation(summary = "Atualizar parcialmente um usuário", description = "Permite atualizar apenas campos específicos de um usuário existente. "
             + "Os campos não informados permanecem inalterados.")
     @PatchMapping("/{id}")
-    public ResponseEntity<User> partialUpdate(@PathVariable("id") Long id, @RequestBody CreateUserDTO createUserDTO) {
+    public ResponseEntity<UserDTO> partialUpdate(@PathVariable Long id, @RequestBody CreateUserDTO createUserDTO) {
         try {
-            User updateUser = userService.partialUpdate(id, CreateUserDTO.toEntity(createUserDTO));
-            return new ResponseEntity<>(updateUser, HttpStatus.CREATED);
+            User updatedUser = userService.partialUpdate(id, CreateUserDTO.toEntity(createUserDTO));
+            return new ResponseEntity<>(UserDTO.fromEntity(updatedUser), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.notFound().build();
