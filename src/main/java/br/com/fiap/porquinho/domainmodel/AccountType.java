@@ -32,7 +32,7 @@ public class AccountType {
     @Column(name = "label", nullable = false, length = 50)
     private @Setter @Getter String label;
 
-    @Column(name = "overdraft", nullable = false, length = 20)
+    @Column(name = "behavior", nullable = false, length = 20)
     private @Setter @Getter String behavior;
 
     @Override
@@ -47,6 +47,5 @@ public class AccountType {
         AccountType accountType = (AccountType) o;
         return Objects.equals(accountTypeId, accountType.accountTypeId);
     }
-    
-}
 
+}

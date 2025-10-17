@@ -1,3 +1,16 @@
 {
-    "java.compile.nullAnalysis.mode": "disabled"
+    "java.compile.nullAnalysis.mode": "disabled",
+    "cSpell.words": [
+        "datasource",
+        "domainmodel",
+        "fiap",
+        "jackson",
+        "jdbc",
+        "Nubank",
+        "nullable",
+        "orcl",
+        "springdoc",
+        "springframework"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

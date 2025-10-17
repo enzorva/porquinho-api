@@ -17,10 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.Category;
 import br.com.fiap.porquinho.domainmodel.User;
-import br.com.fiap.porquinho.presentation.transferObjects.CreateCategoryDTO;
-import br.com.fiap.porquinho.presentation.transferObjects.CategoryDTO;
-import br.com.fiap.porquinho.service.CategoryService;
-import br.com.fiap.porquinho.service.UserService;
+import br.com.fiap.porquinho.presentation.transferObjects.Category.CategoryDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.Category.CreateCategoryDTO;
+import br.com.fiap.porquinho.service.Category.CategoryService;
+import br.com.fiap.porquinho.service.User.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -61,7 +61,7 @@ public class CategoryApiController {
         if (createCategoryDTO.getUserId() != null) {
             user = userService.findById(createCategoryDTO.getUserId())
                     .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                            HttpStatus.NOT_FOUND, "Categoria não encontrada."));
         }
 
         Category newCategory = categoryService.create(

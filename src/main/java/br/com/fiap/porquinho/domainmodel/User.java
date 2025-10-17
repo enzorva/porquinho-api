@@ -44,14 +44,8 @@ public class User {
     @Column(name = "hashed_password", nullable = false, length = 255)
     private @Setter @Getter String hashedPassword;
 
-    // private int timeZoneId;
-
-    // private int countryId;
-
     @Column(name = "income", nullable = false, precision = 14, scale = 2)
     private @Setter @Getter BigDecimal income;
-
-    // private int financeObjectiveId;
 
     @Column(name = "gender", length = 10)
     private @Setter @Getter String gender;
@@ -61,8 +55,6 @@ public class User {
 
     @Column(name = "birthday")
     private @Setter @Getter LocalDate birthday;
-
-    // private int userAddressId;
 
     @Column(name = "profile_picture_url", nullable = false, length = 255)
     private @Setter @Getter String profilePictureUrl;

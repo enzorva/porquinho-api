@@ -17,10 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.User;
 import br.com.fiap.porquinho.domainmodel.Wallet;
-import br.com.fiap.porquinho.presentation.transferObjects.CreateWalletDTO;
-import br.com.fiap.porquinho.presentation.transferObjects.WalletDTO;
-import br.com.fiap.porquinho.service.UserService;
-import br.com.fiap.porquinho.service.WalletService;
+import br.com.fiap.porquinho.presentation.transferObjects.Wallet.CreateWalletDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.Wallet.WalletDTO;
+import br.com.fiap.porquinho.service.User.UserService;
+import br.com.fiap.porquinho.service.Wallet.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

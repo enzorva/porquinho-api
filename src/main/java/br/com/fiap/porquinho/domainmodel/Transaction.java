@@ -31,7 +31,7 @@ public class Transaction {
     @Column(name = "transaction_id")
     private @Setter @Getter Long transactionId;
 
-    @Column(name = "transaction_value", nullable = false, precision =  14, scale = 2)
+    @Column(name = "transaction_value", nullable = false, precision = 14, scale = 2)
     private @Setter @Getter BigDecimal transactionValue;
 
     @Column(name = "description", length = 50)
@@ -40,11 +40,11 @@ public class Transaction {
     @Column(name = "transaction_date", nullable = false)
     private @Setter @Getter LocalDate transactionDate;
 
-    @Column(name = "has_occurred", nullable = false)
-    private @Setter @Getter Boolean hasOccurred;
+    @Column(name = "has_occurred", nullable = false, precision = 1)
+    private @Setter @Getter Integer hasOccurred;
 
-    @Column(name = "is_auto_confirmed", nullable = false)
-    private @Setter @Getter Boolean isAutoConfirmed;
+    @Column(name = "is_auto_confirmed", nullable = false, precision = 1)
+    private @Setter @Getter Integer isAutoConfirmed;
 
     @Column(name = "observation", length = 255)
     private @Setter @Getter String observation;
@@ -56,7 +56,7 @@ public class Transaction {
     @Column(name = "updated_at")
     private @Setter @Getter LocalDateTime updatedAt;
 
-        @PrePersist
+    @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
     }
@@ -78,5 +78,5 @@ public class Transaction {
         Transaction transaction = (Transaction) o;
         return Objects.equals(transactionId, transaction.transactionId);
     }
-    
+
 }

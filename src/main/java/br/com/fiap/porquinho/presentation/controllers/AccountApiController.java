@@ -17,10 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.Wallet;
 import br.com.fiap.porquinho.domainmodel.Account;
-import br.com.fiap.porquinho.presentation.transferObjects.CreateAccountDTO;
-import br.com.fiap.porquinho.presentation.transferObjects.AccountDTO;
-import br.com.fiap.porquinho.service.WalletService;
-import br.com.fiap.porquinho.service.AccountService;
+import br.com.fiap.porquinho.presentation.transferObjects.Account.AccountDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.Account.CreateAccountDTO;
+import br.com.fiap.porquinho.service.Account.AccountService;
+import br.com.fiap.porquinho.service.Wallet.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/accounts")
-@Tag(name = "Carteiras", description = "Operações de gerenciamento de contas: cadastro, consulta, atualização, remoção e listagem de carteiras")
+@Tag(name = "Contas", description = "Operações de gerenciamento de contas: cadastro, consulta, atualização, remoção e listagem de carteiras")
 public class AccountApiController {
 
     private final AccountService<Account, Long> accountService;
@@ -60,7 +60,7 @@ public class AccountApiController {
     public ResponseEntity<AccountDTO> save(@Valid @RequestBody CreateAccountDTO createAccountDTO) {
         Wallet wallet = walletService.findById(createAccountDTO.getWalletId())
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Carteira não encontrado."));
+                        HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
         Account newAccount = accountService.create(CreateAccountDTO.toEntity(createAccountDTO, wallet));
         return new ResponseEntity<>(AccountDTO.fromEntity(newAccount), HttpStatus.CREATED);
@@ -71,12 +71,12 @@ public class AccountApiController {
     public ResponseEntity<AccountDTO> update(@PathVariable Long id,
             @Valid @RequestBody CreateAccountDTO createAccountDTO) {
         if (!accountService.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Carteira não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrado.");
         }
 
         Wallet wallet = walletService.findById(createAccountDTO.getWalletId())
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Carteira não encontrado."));
+                        HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
         Account account = CreateAccountDTO.toEntity(createAccountDTO, wallet);
         account.setAccountId(id);
@@ -92,7 +92,7 @@ public class AccountApiController {
             @RequestBody CreateAccountDTO createAccountDTO) {
         try {
             Account account = accountService.findById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Carteira não encontrado."));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
             Account updatedAccount = accountService.partialUpdate(id,
                     CreateAccountDTO.toEntity(createAccountDTO, account.getWallet()));

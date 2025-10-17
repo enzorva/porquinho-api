@@ -47,6 +47,5 @@ public class Bank {
         Bank bank = (Bank) o;
         return Objects.equals(bank, bank.bankId);
     }
-    
-}
 
+}

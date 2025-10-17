@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.User;
-import br.com.fiap.porquinho.presentation.transferObjects.CreateUserDTO;
-import br.com.fiap.porquinho.presentation.transferObjects.UserDTO;
-import br.com.fiap.porquinho.service.UserService;
+import br.com.fiap.porquinho.presentation.transferObjects.User.CreateUserDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.User.UserDTO;
+import br.com.fiap.porquinho.service.User.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.Transaction;
-import br.com.fiap.porquinho.presentation.transferObjects.CreateTransactionDTO;
-import br.com.fiap.porquinho.presentation.transferObjects.TransactionDTO;
-import br.com.fiap.porquinho.service.TransactionService;
+import br.com.fiap.porquinho.presentation.transferObjects.Transaction.CreateTransactionDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.Transaction.TransactionDTO;
+import br.com.fiap.porquinho.service.Transaction.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TransactionApiController {
 
     private final TransactionService<Transaction, Long> transactionService;
-
 
     @Operation(summary = "Listar todas as transações", description = "Retorna uma lista contendo todas as transações cadastradas no sistema.")
     @GetMapping

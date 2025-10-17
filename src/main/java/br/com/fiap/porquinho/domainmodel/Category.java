@@ -48,7 +48,7 @@ public class Category {
     @Column(name = "updated_at")
     private @Setter @Getter LocalDateTime updatedAt;
 
-        @PrePersist
+    @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
     }
@@ -70,5 +70,5 @@ public class Category {
         Category category = (Category) o;
         return Objects.equals(categoryId, category.categoryId);
     }
-    
+
 }
