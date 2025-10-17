@@ -16,15 +16,15 @@ public class TransactionDTO {
 
     private @Setter @Getter Long transactionId;
 
-    private @Setter @Getter BigDecimal value;
+    private @Setter @Getter BigDecimal transactionValue;
 
     private @Setter @Getter String description;
 
-    private @Setter @Getter LocalDate date;
+    private @Setter @Getter LocalDate transactionDate;
 
-    private @Setter @Getter Integer hasOccured;
+    private @Setter @Getter Boolean hasOccurred;
 
-    private @Setter @Getter Integer isAutoConfirmed;
+    private @Setter @Getter Boolean isAutoConfirmed;
 
     private @Setter @Getter String observation;
 
@@ -38,10 +38,10 @@ public class TransactionDTO {
 
         return TransactionDTO.builder()
                 .transactionId(transaction.getTransactionId())
-                .value(transaction.getValue())
+                .transactionValue(transaction.getTransactionValue())
                 .description(transaction.getDescription())
-                .date(transaction.getDate())
-                .hasOccured(transaction.getHasOccured())
+                .transactionDate(transaction.getTransactionDate())
+                .hasOccurred(transaction.getHasOccurred())
                 .isAutoConfirmed(transaction.getIsAutoConfirmed())
                 .observation(transaction.getObservation())
                 .createdAt(transaction.getCreatedAt())
@@ -55,10 +55,10 @@ public class TransactionDTO {
 
         return Transaction.builder()
                 .transactionId(dto.getTransactionId())
-                .value(dto.getValue())
+                .transactionValue(dto.getTransactionValue())
                 .description(dto.getDescription())
-                .date(dto.getDate())
-                .hasOccured(dto.getHasOccured())
+                .transactionDate(dto.getTransactionDate())
+                .hasOccurred(dto.getHasOccurred())
                 .isAutoConfirmed(dto.getIsAutoConfirmed())
                 .observation(dto.getObservation())
                 .createdAt(dto.getCreatedAt())

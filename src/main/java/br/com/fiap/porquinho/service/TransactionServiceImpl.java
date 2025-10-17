@@ -39,14 +39,14 @@ public class TransactionServiceImpl implements TransactionService<Transaction, L
 
         Transaction transactionFromDatabase = transactionRepository.findById(id).orElse(null);
 
-        if (transaction.getValue() != null && !transactionFromDatabase.getValue().equals(transaction.getValue()))
-            transactionFromDatabase.setValue(transaction.getValue());
+        if (transaction.getTransactionValue() != null && !transactionFromDatabase.getTransactionValue().equals(transaction.getTransactionValue()))
+            transactionFromDatabase.setTransactionValue(transaction.getTransactionValue());
 
         if (transaction.getDescription() != null && !transactionFromDatabase.getDescription().equals(transaction.getDescription()))
             transactionFromDatabase.setDescription(transaction.getDescription());
 
-        if (transaction.getDate() != null && !transactionFromDatabase.getDate().equals(transaction.getDate()))
-            transactionFromDatabase.setDate(transaction.getDate());
+        if (transaction.getTransactionDate() != null && !transactionFromDatabase.getTransactionDate().equals(transaction.getTransactionDate()))
+            transactionFromDatabase.setTransactionDate(transaction.getTransactionDate());
 
         // if (transaction.getHasOccured() != null && !transactionFromDatabase.getHasOccured().equals(transaction.getHasOccured()))
         //     transactionFromDatabase.setHasOccured(transaction.getHasOccured());

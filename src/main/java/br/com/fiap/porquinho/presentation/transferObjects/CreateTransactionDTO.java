@@ -19,19 +19,19 @@ public class CreateTransactionDTO {
 
     @NotNull(message = "O valor da transação não pode ser nulo")
     @Positive(message = "O valor da transação deve ser maior que zero")
-    private BigDecimal value;
+    private BigDecimal transactionValue;
 
     @Size(max = 50, message = "A descrição deve ter no máximo 50 caracteres")
     private String description;
 
     @NotNull(message = "A data da transação não pode ser nula")
-    private LocalDate date;
+    private LocalDate transactionDate;
 
     @NotNull(message = "O campo 'hasOccurred' não pode ser nulo")
-    private Integer hasOccured;
+    private Boolean hasOccurred;
 
     @NotNull(message = "O campo 'isAutoConfirmed' não pode ser nulo")
-    private Integer isAutoConfirmed;
+    private Boolean isAutoConfirmed;
 
     @Size(max = 255, message = "A observação deve ter no máximo 255 caracteres")
     private String observation;
@@ -39,17 +39,17 @@ public class CreateTransactionDTO {
     // @NotBlank(message = "O nome completo não pode estar em branco")
     // private @Setter @Getter LocalDateTime createdAt;
 
-    // private @Setter @Getter LocalDateTime updatedAt;
+    // private @Setter @Getter LocalDateTime uptransactionDatedAt;
 
     public static CreateTransactionDTO fromEntity(Transaction transaction) {
         if (transaction == null)
             return null;
 
         return CreateTransactionDTO.builder()
-                .value(transaction.getValue())
+                .transactionValue(transaction.getTransactionValue())
                 .description(transaction.getDescription())
-                .date(transaction.getDate())
-                .hasOccured(transaction.getHasOccured())
+                .transactionDate(transaction.getTransactionDate())
+                .hasOccurred(transaction.getHasOccurred())
                 .isAutoConfirmed(transaction.getIsAutoConfirmed())
                 .observation(transaction.getObservation())
                 .build();
@@ -60,10 +60,10 @@ public class CreateTransactionDTO {
             return null;
 
         return Transaction.builder()
-                .value(dto.getValue())
+                .transactionValue(dto.getTransactionValue())
                 .description(dto.getDescription())
-                .date(dto.getDate())
-                .hasOccured(dto.getHasOccured())
+                .transactionDate(dto.getTransactionDate())
+                .hasOccurred(dto.getHasOccurred())
                 .isAutoConfirmed(dto.getIsAutoConfirmed())
                 .observation(dto.getObservation())
                 .build();
