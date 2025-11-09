@@ -1,6 +1,7 @@
 {
     "java.compile.nullAnalysis.mode": "disabled",
     "cSpell.words": [
+        "Containerização",
         "datasource",
         "domainmodel",
         "Enzo",
@@ -11,7 +12,8 @@
         "nullable",
         "orcl",
         "springdoc",
-        "springframework"
+        "springframework",
+        "temurin"
     ],
     "java.configuration.updateBuildConfiguration": "interactive"
 }
