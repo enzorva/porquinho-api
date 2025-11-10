@@ -39,6 +39,14 @@ public class Account {
     @Column(name = "name", nullable = false, length = 50)
     private @Setter @Getter String name;
 
+    @ManyToOne
+    @JoinColumn(name = "account_type_id", nullable = false)
+    private @Setter @Getter AccountType accountType;
+
+    @ManyToOne
+    @JoinColumn(name = "bank_id")
+    private @Setter @Getter Bank bank;
+
     @Column(name = "balance", nullable = false, precision = 14, scale = 2)
     private @Setter @Getter BigDecimal balance;
 

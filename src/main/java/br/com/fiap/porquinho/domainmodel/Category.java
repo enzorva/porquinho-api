@@ -1,7 +1,9 @@
 package br.com.fiap.porquinho.domainmodel;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -40,6 +43,10 @@ public class Category {
 
     @Column(name = "type", nullable = false, length = 10)
     private @Setter @Getter String type;
+
+    @ManyToMany(mappedBy = "categories")
+    @Builder.Default
+    private @Setter @Getter Set<Transaction> transactions = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default

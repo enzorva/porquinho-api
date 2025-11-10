@@ -3,9 +3,15 @@ package br.com.fiap.porquinho.domainmodel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +37,10 @@ public class Transaction {
     @Column(name = "transaction_id")
     private @Setter @Getter Long transactionId;
 
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private @Setter @Getter Account account;
+
     @Column(name = "transaction_value", nullable = false, precision = 14, scale = 2)
     private @Setter @Getter BigDecimal transactionValue;
 
@@ -48,6 +58,11 @@ public class Transaction {
 
     @Column(name = "observation", length = 255)
     private @Setter @Getter String observation;
+
+    @ManyToMany
+    @JoinTable(name = "P_TRANSACTION_CATEGORY", joinColumns = @JoinColumn(name = "transaction_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @Builder.Default
+    private @Setter @Getter Set<Category> categories = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
