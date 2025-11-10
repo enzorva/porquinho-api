@@ -22,6 +22,15 @@ O app permite o registro e acompanhamento de receitas, despesas e contas, promov
 **Assista no YouTube:** [https://youtu.be/uYpMm3QMLng](https://youtu.be/uYpMm3QMLng)
 
 
+## Cronograma de Desenvolvimento
+
+| Fase | Entregas Principais |
+|------|---------------------|
+| **Sprint 01** | Definição do escopo, modelagem do banco e criação das entidades | 
+| **Sprint 02** | Implementação dos endpoints principais (Users, Wallets, Accounts) | 
+| **Sprint 03** | Relatórios, integração com IA e validações de negócio |
+| **Sprint 04** | Integração com API financeira e deploy na nuvem |
+
 ## Diagrama de Classes
 
 ![Diagrama de Classes](./docs/diagrama-classes.png)
