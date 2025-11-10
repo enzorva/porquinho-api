@@ -24,7 +24,7 @@ O app permite o registro e acompanhamento de receitas, despesas e contas, promov
 
 ## Diagrama de Classes
 
-![Diagrama de Classes](./docs/classes-diagram.png)
+![Diagrama de Classes](./docs/diagrama-classes-porquinho.png)
 
 ## Diagrama Entidade Relacionamento
 
