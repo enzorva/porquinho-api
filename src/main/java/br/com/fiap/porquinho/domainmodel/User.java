@@ -3,8 +3,12 @@ package br.com.fiap.porquinho.domainmodel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,7 +32,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +48,7 @@ public class User {
     @Column(name = "hashed_password", nullable = false, length = 255)
     private @Setter @Getter String hashedPassword;
 
-    @Column(name = "income", nullable = false, precision = 14, scale = 2)
+    @Column(name = "income", precision = 14, scale = 2)
     private @Setter @Getter BigDecimal income;
 
     @Column(name = "gender", length = 10)
@@ -56,7 +60,7 @@ public class User {
     @Column(name = "birthday")
     private @Setter @Getter LocalDate birthday;
 
-    @Column(name = "profile_picture_url", nullable = false, length = 255)
+    @Column(name = "profile_picture_url", length = 255)
     private @Setter @Getter String profilePictureUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -90,6 +94,41 @@ public class User {
             return false;
         User user = (User) o;
         return Objects.equals(userId, user.userId);
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return hashedPassword;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }

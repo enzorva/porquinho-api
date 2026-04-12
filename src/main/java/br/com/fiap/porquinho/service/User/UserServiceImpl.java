@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.fiap.porquinho.domainmodel.User;
+import br.com.fiap.porquinho.domainmodel.exceptions.FieldValidationException;
 import br.com.fiap.porquinho.domainmodel.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService<User, Long> {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<User> findAll() {
@@ -28,6 +31,12 @@ public class UserServiceImpl implements UserService<User, Long> {
 
     @Override
     public User create(User user) {
+        userRepository.findByEmail(user.getEmail()).ifPresent(other -> {
+            throw new FieldValidationException("email", "Este e-mail já está em uso.");
+        });
+
+        user.setHashedPassword(passwordEncoder.encode(user.getHashedPassword()));
+
         return userRepository.save(user);
     }
 
@@ -36,6 +45,12 @@ public class UserServiceImpl implements UserService<User, Long> {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("Entity not found");
         }
+
+        userRepository.findByEmail(user.getEmail()).ifPresent(other -> {
+            if (!other.getUserId().equals(user.getUserId())) {
+                throw new FieldValidationException("email", "Este e-mail já está em uso.");
+            }
+        });
 
         User userFromDatabase = userRepository.findById(id).orElse(null);
 
