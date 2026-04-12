@@ -35,3 +35,4 @@ jobs:
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_b51a1287581e4082aa5518317a91d1c0 }}
         package: '${{ github.workspace }}/target/*.jar'
+        
