@@ -31,7 +31,7 @@ public class CategoryDTO {
 
         return CategoryDTO.builder()
                 .categoryId(transaction.getCategoryId())
-                .userId(transaction.getUser().getUserId())
+                .userId(transaction.getUser() != null ? transaction.getUser().getUserId() : null)
                 .name(transaction.getName())
                 .type(transaction.getType())
                 .createdAt(transaction.getCreatedAt())

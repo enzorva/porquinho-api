@@ -35,7 +35,7 @@ public class Category {
     private @Setter @Getter Long categoryId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private @Setter @Getter User user;
 
     @Column(name = "name", nullable = false, length = 50)
