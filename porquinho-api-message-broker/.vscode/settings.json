@@ -1,0 +1,19 @@
+{
+    "java.compile.nullAnalysis.mode": "disabled",
+    "cSpell.words": [
+        "Containerização",
+        "datasource",
+        "domainmodel",
+        "Enzo",
+        "fiap",
+        "jackson",
+        "jdbc",
+        "Nubank",
+        "nullable",
+        "orcl",
+        "springdoc",
+        "springframework",
+        "temurin"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
