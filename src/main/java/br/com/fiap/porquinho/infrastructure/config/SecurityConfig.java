@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/account-types").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/account-types/{id}").permitAll()
+                        .requestMatchers("/test/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
