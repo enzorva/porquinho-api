@@ -1,15 +1,19 @@
 package br.com.fiap.porquinho.service.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.fiap.porquinho.domainmodel.Account;
+import br.com.fiap.porquinho.domainmodel.Transaction;
 import br.com.fiap.porquinho.domainmodel.User;
 import br.com.fiap.porquinho.domainmodel.exceptions.FieldValidationException;
 import br.com.fiap.porquinho.domainmodel.repositories.UserRepository;
+import br.com.fiap.porquinho.presentation.transferObjects.User.UserSummaryDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -87,6 +91,43 @@ public class UserServiceImpl implements UserService<User, Long> {
     @Override
     public boolean existsById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    @Override
+    public List<Account> findUserAccounts(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return userRepository.findAccountsByUserId(userId);
+    }
+
+    @Override
+    public List<Transaction> findUserLastTransactions(Long userId, int limit) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Transaction> transactions = userRepository.findLastTransactionsByUserId(userId);
+        // Limita os resultados em memória
+        return transactions.stream()
+                .limit(limit)
+                .toList();
+    }
+
+    @Override
+    public UserSummaryDTO getUserSummary(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return null;
+        }
+
+        List<Account> accounts = findUserAccounts(userId);
+        List<Transaction> transactions = findUserLastTransactions(userId, 5);
+
+        return UserSummaryDTO.fromEntity(user.get(), accounts, transactions);
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.User;
+import br.com.fiap.porquinho.infrastructure.config.JwtUserData;
 import br.com.fiap.porquinho.presentation.transferObjects.User.CreateUserDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.User.UserDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.User.UserMeDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.User.UserSummaryDTO;
 import br.com.fiap.porquinho.service.User.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,6 +53,38 @@ public class UserApiController {
         return userService.findById(id)
                 .map(user -> ResponseEntity.ok(UserDTO.fromEntity(user)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Recuperar dados do usuário autenticado", description = "Retorna as informações do usuário autenticado através do token JWT.")
+    @GetMapping("/me")
+    public ResponseEntity<UserMeDTO> getMe() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof JwtUserData)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        JwtUserData jwtUserData = (JwtUserData) authentication.getPrincipal();
+        return userService.findById(jwtUserData.userId())
+                .map(user -> ResponseEntity.ok(UserMeDTO.fromEntity(user)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Recuperar resumo do usuário para página inicial", description = "Retorna as informações necessárias para a página inicial, incluindo saldo total, contas, últimas transações e resumos financeiros.")
+    @GetMapping("/summary")
+    public ResponseEntity<UserSummaryDTO> getUserSummary() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof JwtUserData)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        JwtUserData jwtUserData = (JwtUserData) authentication.getPrincipal();
+        UserSummaryDTO summary = userService.getUserSummary(jwtUserData.userId());
+
+        if (summary == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(summary);
     }
 
     @Operation(summary = "Cadastrar novo usuário", description = "Cria um novo registro de usuário no sistema com os dados informados.")
