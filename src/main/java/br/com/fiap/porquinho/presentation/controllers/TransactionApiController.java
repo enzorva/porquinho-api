@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.fiap.porquinho.domainmodel.Account;
 import br.com.fiap.porquinho.domainmodel.Transaction;
+import br.com.fiap.porquinho.infrastructure.config.JwtUserData;
 import br.com.fiap.porquinho.presentation.transferObjects.Transaction.CreateTransactionDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.Transaction.TransactionDTO;
+import br.com.fiap.porquinho.service.Account.AccountService;
 import br.com.fiap.porquinho.service.Transaction.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,10 +38,19 @@ public class TransactionApiController {
 
     private final TransactionService<Transaction, Long> transactionService;
 
+    private final AccountService<Account, Long> accountService;
+
     @Operation(summary = "Listar todas as transações", description = "Retorna uma lista contendo todas as transações cadastradas no sistema.")
     @GetMapping
     public ResponseEntity<List<TransactionDTO>> findAll() {
-        return ResponseEntity.ok(transactionService.findAll()
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof JwtUserData)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        JwtUserData jwtUserData = (JwtUserData) authentication.getPrincipal();
+
+        return ResponseEntity.ok(transactionService.findByUserId(jwtUserData.userId())
                 .stream()
                 .map(TransactionDTO::fromEntity)
                 .toList());
@@ -54,9 +67,12 @@ public class TransactionApiController {
     @Operation(summary = "Cadastrar nova transação", description = "Cria um novo registro de transação no sistema com os dados informados.")
     @PostMapping
     public ResponseEntity<TransactionDTO> save(@Valid @RequestBody CreateTransactionDTO createTransactionDTO) {
+        Account account = accountService.findById(createTransactionDTO.getAccountId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
         Transaction newTransaction = transactionService.create(
-                CreateTransactionDTO.toEntity(createTransactionDTO));
+                CreateTransactionDTO.toEntity(createTransactionDTO, account));
 
         return new ResponseEntity<>(TransactionDTO.fromEntity(newTransaction), HttpStatus.CREATED);
     }
@@ -69,7 +85,11 @@ public class TransactionApiController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transação não encontrada.");
         }
 
-        Transaction transaction = CreateTransactionDTO.toEntity(createTransactionDTO);
+        Account account = accountService.findById(createTransactionDTO.getAccountId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Conta não encontrado."));
+
+        Transaction transaction = CreateTransactionDTO.toEntity(createTransactionDTO, account);
         transaction.setTransactionId(id);
 
         Transaction updatedTransaction = transactionService.create(transaction);
@@ -82,8 +102,12 @@ public class TransactionApiController {
     public ResponseEntity<TransactionDTO> partialUpdate(@PathVariable Long id,
             @RequestBody CreateTransactionDTO createTransactionDTO) {
         try {
+            Account account = accountService.findById(createTransactionDTO.getAccountId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Conta não encontrado."));
+
             Transaction updatedTransaction = transactionService.partialUpdate(id,
-                    CreateTransactionDTO.toEntity(createTransactionDTO));
+                    CreateTransactionDTO.toEntity(createTransactionDTO, account));
             return new ResponseEntity<>(TransactionDTO.fromEntity(updatedTransaction), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage(), e);
@@ -101,4 +125,5 @@ public class TransactionApiController {
         transactionService.removeById(id);
         return ResponseEntity.noContent().build();
     }
+
 }

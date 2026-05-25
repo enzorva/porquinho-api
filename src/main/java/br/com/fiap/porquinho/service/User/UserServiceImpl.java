@@ -111,7 +111,6 @@ public class UserServiceImpl implements UserService<User, Long> {
         }
 
         List<Transaction> transactions = userRepository.findLastTransactionsByUserId(userId);
-        // Limita os resultados em memória
         return transactions.stream()
                 .limit(limit)
                 .toList();

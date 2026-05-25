@@ -22,6 +22,11 @@ public class AccountServiceImpl implements AccountService<Account, Long> {
     }
 
     @Override
+    public List<Account> findByUserId(Long userId) {
+        return new ArrayList<>(accountRepository.findByWallet_User_UserId(userId));
+    }
+
+    @Override
     public Optional<Account> findById(Long id) {
         return accountRepository.findById(id);
     }

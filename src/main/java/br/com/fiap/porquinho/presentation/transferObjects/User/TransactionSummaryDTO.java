@@ -13,6 +13,8 @@ import lombok.Setter;
 @Builder
 public class TransactionSummaryDTO {
 
+    private Long id;
+
     private String name;
 
     private String icon;
@@ -29,19 +31,16 @@ public class TransactionSummaryDTO {
         if (transaction == null)
             return null;
 
-        // Determina o tipo da transação (recipe/expense) baseado no sinal do valor
-        // Valores positivos = receita, negativos = despesa
         String transactionType = transaction.getTransactionValue().signum() > 0 ? "recipe" : "expense";
 
         return TransactionSummaryDTO.builder()
+                .id(transaction.getTransactionId())
                 .name(transaction.getDescription())
-                .icon(transaction.getCategories() != null && !transaction.getCategories().isEmpty()
-                        ? transaction.getCategories().iterator().next().getName()
-                        : "default-icon")
                 .accountName(transaction.getAccount() != null ? transaction.getAccount().getName() : "")
                 .date(transaction.getTransactionDate())
                 .value(transaction.getTransactionValue().abs())
                 .type(transactionType)
                 .build();
     }
+
 }

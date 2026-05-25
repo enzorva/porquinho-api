@@ -2,6 +2,8 @@ package br.com.fiap.porquinho.presentation.transferObjects.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import br.com.fiap.porquinho.domainmodel.Account;
 import br.com.fiap.porquinho.domainmodel.Transaction;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,8 +17,11 @@ import lombok.Setter;
 @Builder
 public class CreateTransactionDTO {
 
+    @NotNull(message = "O ID da conta não pode ser nulo")
+    @Positive(message = "O ID da deve ser positivo")
+    private Long accountId;
+
     @NotNull(message = "O valor da transação não pode ser nulo")
-    @Positive(message = "O valor da transação deve ser maior que zero")
     private BigDecimal transactionValue;
 
     @Size(max = 50, message = "A descrição deve ter no máximo 50 caracteres")
@@ -39,6 +44,7 @@ public class CreateTransactionDTO {
             return null;
 
         return CreateTransactionDTO.builder()
+                .accountId(transaction.getAccount().getAccountId())
                 .transactionValue(transaction.getTransactionValue())
                 .description(transaction.getDescription())
                 .transactionDate(transaction.getTransactionDate())
@@ -48,11 +54,12 @@ public class CreateTransactionDTO {
                 .build();
     }
 
-    public static Transaction toEntity(CreateTransactionDTO dto) {
+    public static Transaction toEntity(CreateTransactionDTO dto, Account account) {
         if (dto == null)
             return null;
 
         return Transaction.builder()
+                .account(account)
                 .transactionValue(dto.getTransactionValue())
                 .description(dto.getDescription())
                 .transactionDate(dto.getTransactionDate())

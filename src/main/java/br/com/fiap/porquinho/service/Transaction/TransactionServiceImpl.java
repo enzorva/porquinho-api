@@ -22,6 +22,11 @@ public class TransactionServiceImpl implements TransactionService<Transaction, L
     }
 
     @Override
+    public List<Transaction> findByUserId(Long userId) {
+        return new ArrayList<>(transactionRepository.findByAccount_Wallet_User_UserId(userId));
+    }
+
+    @Override
     public Optional<Transaction> findById(Long id) {
         return transactionRepository.findById(id);
     }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import br.com.fiap.porquinho.domainmodel.Wallet;
 import br.com.fiap.porquinho.domainmodel.Account;
+import br.com.fiap.porquinho.domainmodel.AccountType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,8 @@ public class AccountDTO {
     private Long accountId;
 
     private Long walletId;
+
+    private Long accountTypeId;
 
     private String name;
 
@@ -35,6 +38,7 @@ public class AccountDTO {
         return AccountDTO.builder()
                 .accountId(account.getAccountId())
                 .walletId(account.getWallet().getWalletId())
+                .accountTypeId(account.getAccountType().getAccountTypeId())
                 .name(account.getName())
                 .balance(account.getBalance())
                 .overdraft(account.getOverdraft())
@@ -43,13 +47,14 @@ public class AccountDTO {
                 .build();
     }
 
-    public static Account toEntity(AccountDTO dto, Wallet wallet) {
+    public static Account toEntity(AccountDTO dto, AccountType accountType, Wallet wallet) {
         if (dto == null)
             return null;
 
         return Account.builder()
                 .accountId(dto.getAccountId())
                 .wallet(wallet)
+                .accountType(accountType)
                 .name(dto.getName())
                 .balance(dto.getBalance())
                 .overdraft(dto.getOverdraft())
@@ -57,4 +62,5 @@ public class AccountDTO {
                 .updatedAt(dto.getUpdatedAt())
                 .build();
     }
+
 }

@@ -34,12 +34,10 @@ public class UserSummaryDTO {
         if (user == null)
             return null;
 
-        // Calcula o saldo total
         BigDecimal totalBalance = accounts.stream()
                 .map(Account::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Calcula total de receitas e despesas
         BigDecimal totalRecipe = BigDecimal.ZERO;
         BigDecimal totalExpense = BigDecimal.ZERO;
 
@@ -51,12 +49,10 @@ public class UserSummaryDTO {
             }
         }
 
-        // Converte contas para AccountSummaryDTO
         List<AccountSummaryDTO> accountDTOs = accounts.stream()
                 .map(AccountSummaryDTO::fromEntity)
                 .collect(Collectors.toList());
 
-        // Converte transações para TransactionSummaryDTO (últimas 5)
         List<TransactionSummaryDTO> transactionDTOs = transactions.stream()
                 .limit(5)
                 .map(TransactionSummaryDTO::fromEntity)
@@ -72,4 +68,5 @@ public class UserSummaryDTO {
                 .lastTransactions(transactionDTOs)
                 .build();
     }
+
 }

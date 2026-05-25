@@ -27,9 +27,6 @@ public class AccountSummaryDTO {
         return AccountSummaryDTO.builder()
                 .id(account.getAccountId())
                 .name(account.getName())
-                .icon(account.getBank() != null && account.getBank().getLogoUrl() != null 
-                    ? account.getBank().getLogoUrl() 
-                    : "default-icon")
                 .balance(account.getBalance())
                 .build();
     }

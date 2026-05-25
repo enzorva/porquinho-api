@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import br.com.fiap.porquinho.domainmodel.Account;
 import br.com.fiap.porquinho.domainmodel.Transaction;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,8 @@ import lombok.Setter;
 public class TransactionDTO {
 
     private @Setter @Getter Long transactionId;
+
+    private @Setter @Getter Long accountId;
 
     private @Setter @Getter BigDecimal transactionValue;
 
@@ -38,6 +41,7 @@ public class TransactionDTO {
 
         return TransactionDTO.builder()
                 .transactionId(transaction.getTransactionId())
+                .accountId(transaction.getAccount().getAccountId())
                 .transactionValue(transaction.getTransactionValue())
                 .description(transaction.getDescription())
                 .transactionDate(transaction.getTransactionDate())
@@ -49,12 +53,13 @@ public class TransactionDTO {
                 .build();
     }
 
-    public static Transaction toEntity(TransactionDTO dto) {
+    public static Transaction toEntity(TransactionDTO dto, Account account) {
         if (dto == null)
             return null;
 
         return Transaction.builder()
                 .transactionId(dto.getTransactionId())
+                .account(account)
                 .transactionValue(dto.getTransactionValue())
                 .description(dto.getDescription())
                 .transactionDate(dto.getTransactionDate())

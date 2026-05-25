@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.porquinho.domainmodel.Wallet;
+import br.com.fiap.porquinho.infrastructure.config.JwtUserData;
 import br.com.fiap.porquinho.domainmodel.Account;
+import br.com.fiap.porquinho.domainmodel.AccountType;
 import br.com.fiap.porquinho.presentation.transferObjects.Account.AccountDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.Account.CreateAccountDTO;
 import br.com.fiap.porquinho.service.Account.AccountService;
+import br.com.fiap.porquinho.service.AccountType.AccountTypeService;
 import br.com.fiap.porquinho.service.Wallet.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,12 +40,21 @@ public class AccountApiController {
 
     private final AccountService<Account, Long> accountService;
 
+    private final AccountTypeService<AccountType, Long> accountTypeService;
+
     private final WalletService<Wallet, Long> walletService;
 
     @Operation(summary = "Listar todas as contas", description = "Retorna uma lista contendo todas as contas cadastradas no sistema.")
     @GetMapping
     public ResponseEntity<List<AccountDTO>> findAll() {
-        return ResponseEntity.ok(accountService.findAll()
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof JwtUserData)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        JwtUserData jwtUserData = (JwtUserData) authentication.getPrincipal();
+
+        return ResponseEntity.ok(accountService.findByUserId(jwtUserData.userId())
                 .stream()
                 .map(AccountDTO::fromEntity)
                 .toList());
@@ -58,11 +71,15 @@ public class AccountApiController {
     @Operation(summary = "Cadastrar nova conta", description = "Cria um novo registro de conta no sistema com os dados informados.")
     @PostMapping
     public ResponseEntity<AccountDTO> save(@Valid @RequestBody CreateAccountDTO createAccountDTO) {
+        AccountType accountType = accountTypeService.findById(createAccountDTO.getAccountTypeId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Tipo de conta não encontrado."));
+
         Wallet wallet = walletService.findById(createAccountDTO.getWalletId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
-        Account newAccount = accountService.create(CreateAccountDTO.toEntity(createAccountDTO, wallet));
+        Account newAccount = accountService.create(CreateAccountDTO.toEntity(createAccountDTO, accountType, wallet));
         return new ResponseEntity<>(AccountDTO.fromEntity(newAccount), HttpStatus.CREATED);
     }
 
@@ -74,11 +91,15 @@ public class AccountApiController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrado.");
         }
 
+        AccountType accountType = accountTypeService.findById(createAccountDTO.getAccountTypeId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Tipo de conta não encontrado."));
+
         Wallet wallet = walletService.findById(createAccountDTO.getWalletId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
-        Account account = CreateAccountDTO.toEntity(createAccountDTO, wallet);
+        Account account = CreateAccountDTO.toEntity(createAccountDTO, accountType, wallet);
         account.setAccountId(id);
 
         Account updatedAccount = accountService.create(account);
@@ -95,7 +116,7 @@ public class AccountApiController {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrado."));
 
             Account updatedAccount = accountService.partialUpdate(id,
-                    CreateAccountDTO.toEntity(createAccountDTO, account.getWallet()));
+                    CreateAccountDTO.toEntity(createAccountDTO, account.getAccountType(), account.getWallet()));
             return new ResponseEntity<>(AccountDTO.fromEntity(updatedAccount), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage(), e);

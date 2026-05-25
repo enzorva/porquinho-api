@@ -1,5 +1,6 @@
 package br.com.fiap.porquinho.presentation.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -16,13 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.fiap.porquinho.domainmodel.Account;
+import br.com.fiap.porquinho.domainmodel.AccountType;
 import br.com.fiap.porquinho.domainmodel.User;
+import br.com.fiap.porquinho.domainmodel.Wallet;
 import br.com.fiap.porquinho.infrastructure.config.JwtUserData;
+import br.com.fiap.porquinho.presentation.transferObjects.Account.CreateAccountDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.User.CreateUserDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.User.UserDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.User.UserMeDTO;
 import br.com.fiap.porquinho.presentation.transferObjects.User.UserSummaryDTO;
+import br.com.fiap.porquinho.presentation.transferObjects.Wallet.CreateWalletDTO;
+import br.com.fiap.porquinho.service.Account.AccountService;
+import br.com.fiap.porquinho.service.AccountType.AccountTypeService;
 import br.com.fiap.porquinho.service.User.UserService;
+import br.com.fiap.porquinho.service.Wallet.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,6 +46,12 @@ import lombok.extern.slf4j.Slf4j;
 public class UserApiController {
 
     private final UserService<User, Long> userService;
+
+    private final WalletService<Wallet, Long> walletService;
+
+    private final AccountTypeService<AccountType, Long> accountTypeService;
+
+    private final AccountService<Account, Long> accountService;
 
     @Operation(summary = "Listar todos os usuários", description = "Retorna uma lista contendo todos os usuários cadastrados no sistema.")
     @GetMapping
@@ -91,6 +106,25 @@ public class UserApiController {
     @PostMapping
     public ResponseEntity<UserDTO> save(@Valid @RequestBody CreateUserDTO createUserDTO) {
         User newUser = userService.create(CreateUserDTO.toEntity(createUserDTO));
+
+        CreateWalletDTO createWalletDTO = CreateWalletDTO.builder()
+                .userId(newUser.getUserId())
+                .name("Carteira Padrão")
+                .description("Esta carteira foi gerada automaticamente pelo sistema.")
+                .build();
+        Wallet newWallet = walletService.create(CreateWalletDTO.toEntity(createWalletDTO, newUser));
+
+        AccountType accountType = accountTypeService.findById(2L).orElseThrow();
+
+        CreateAccountDTO createAccountDTO = CreateAccountDTO.builder()
+                .walletId(newWallet.getWalletId())
+                .accountTypeId(2L)
+                .name("Conta Padrão")
+                .balance(BigDecimal.valueOf(0))
+                .overdraft(0)
+                .build();
+        accountService.create(CreateAccountDTO.toEntity(createAccountDTO, accountType, newWallet));
+
         return new ResponseEntity<>(UserDTO.fromEntity(newUser), HttpStatus.CREATED);
     }
 

@@ -7,6 +7,8 @@ public interface AccountService<T, ID> {
 
     List<T> findAll();
 
+    List<T> findByUserId(ID id);
+
     Optional<T> findById(ID id);
 
     T create(T o);
